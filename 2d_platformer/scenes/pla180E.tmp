@@ -1,0 +1,169 @@
+[gd_scene load_steps=18 format=3 uid="uid://cdjfv0mp35jta"]
+
+[ext_resource type="Texture2D" uid="uid://bswp6dwtiwdj6" path="res://assets/images/sprites/character_sprite.png" id="1_ehro5"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_o2ugh"]
+[ext_resource type="AudioStream" uid="uid://4knxo8t6wlsd" path="res://assets/audio/sfx/Jump.wav" id="3_pj6l8"]
+[ext_resource type="AudioStream" uid="uid://dkd0xhbgorada" path="res://assets/audio/sfx/Dash.wav" id="4_eu12x"]
+[ext_resource type="AudioStream" uid="uid://cj5kk751gglm" path="res://assets/audio/sfx/Walking.wav" id="5_yk51j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yg88o"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_667wr"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pawfk"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jsh0o"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u0vwa"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hwwmq"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7flt8"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hak8n"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dekhk"]
+atlas = ExtResource("1_ehro5")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_psu7y"]
+animations = [{
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_yg88o")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_667wr")
+}],
+"loop": true,
+"name": &"dash",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pawfk")
+}],
+"loop": true,
+"name": &"falling",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_jsh0o")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_u0vwa")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_hwwmq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_7flt8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hak8n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hak8n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hak8n")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dekhk")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c6etx"]
+radius = 2.0
+
+[sub_resource type="Curve" id="Curve_vq2y0"]
+max_value = 2.0
+bake_resolution = 1
+_data = [Vector2(0.00505051, 1.34393), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_o2ugh")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -2)
+sprite_frames = SubResource("SpriteFrames_psu7y")
+animation = &"falling"
+autoplay = "idle"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_c6etx")
+one_way_collision_margin = 0.0
+
+[node name="JumpSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_pj6l8")
+volume_db = -14.856
+pitch_scale = 2.03
+bus = &"SFX"
+
+[node name="DashSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_eu12x")
+volume_db = -11.074
+bus = &"SFX"
+
+[node name="WalkingSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_yk51j")
+volume_db = -13.919
+bus = &"SFX"
+
+[node name="DashParticles" type="CPUParticles2D" parent="."]
+z_index = -1
+position = Vector2(-2, -2)
+emitting = false
+amount = 32
+lifetime = 0.15
+speed_scale = 0.31
+randomness = 1.0
+lifetime_randomness = 0.3
+fixed_fps = 60
+direction = Vector2(-1, 0)
+gravity = Vector2(0, 0)
+initial_velocity_min = 70.7
+initial_velocity_max = 82.4
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+scale_amount_min = 0.5
+scale_amount_max = 1.5
+scale_amount_curve = SubResource("Curve_vq2y0")
+color = Color(0.877616, 0.877616, 0.877616, 1)
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true

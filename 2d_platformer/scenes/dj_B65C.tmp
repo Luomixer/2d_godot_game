@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3 uid="uid://h4kjv2r085i5"]
+
+[ext_resource type="Script" path="res://scenes/dj_orb.gd" id="1_2r8j4"]
+[ext_resource type="Texture2D" uid="uid://i087vp41oky3" path="res://assets/images/sprites/dj_orb_sprite.png" id="2_e5cy5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iyda1"]
+atlas = ExtResource("2_e5cy5")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_466ug"]
+atlas = ExtResource("2_e5cy5")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o24rv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iyda1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_466ug")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w24wm"]
+radius = 5.0
+
+[node name="Area2D" type="Area2D"]
+script = ExtResource("1_2r8j4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_o24rv")
+autoplay = "default"
+frame = 1
+frame_progress = 0.669494
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_w24wm")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

@@ -1,0 +1,99 @@
+[gd_scene load_steps=9 format=3 uid="uid://b253gh4uh5twd"]
+
+[ext_resource type="Texture2D" uid="uid://i087vp41oky3" path="res://assets/images/sprites/dj_orb_sprite.png" id="2_js68w"]
+[ext_resource type="AudioStream" uid="uid://cir56hxf7bqxd" path="res://assets/audio/sfx/DjOrb.wav" id="3_saa1e"]
+
+[sub_resource type="GDScript" id="GDScript_3q3rp"]
+script/source = "extends Area2D
+var Inside = false
+
+func _physics_process(delta):
+	if Inside and Input.is_action_just_pressed(\"Jump\"):
+		$Timer.start()
+		$CollisionShape2D.disabled = true
+		$AnimatedSprite2D.visible = false
+		$CPUParticles2D.emitting = true
+		$SFX.play()
+	if $Timer.time_left == 0:
+		$CollisionShape2D.disabled = false
+		$AnimatedSprite2D.visible = true
+
+func _on_body_exited(body):
+	Inside = false
+	body.InsideJOrb = false
+func _on_body_entered(body):
+	body.InsideJOrb = true
+	Inside = true
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_irqy6"]
+radius = 8.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_af6qc"]
+atlas = ExtResource("2_js68w")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sivn7"]
+atlas = ExtResource("2_js68w")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_84oli"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af6qc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sivn7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Curve" id="Curve_8lhet"]
+max_value = 2.0
+_data = [Vector2(0.00252525, 2), 0.0, 0.0, 0, 0, Vector2(0.50505, 1.76112), -3.73404, -3.73404, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="JumpOrb" type="Area2D"]
+collision_mask = 2
+script = SubResource("GDScript_3q3rp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_irqy6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 2
+sprite_frames = SubResource("SpriteFrames_84oli")
+autoplay = "default"
+frame_progress = 0.466837
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+lifetime = 0.25
+one_shot = true
+explosiveness = 0.76
+randomness = 1.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 100.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+radial_accel_max = 100.0
+scale_amount_min = 0.5
+scale_amount_curve = SubResource("Curve_8lhet")
+
+[node name="SFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_saa1e")
+volume_db = -13.236
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
